@@ -4,13 +4,15 @@
   "service": "app",
   "workspaceFolder": "/workspaces/university-health-container",
   "remoteUser": "vscode",
-  "features": {
-    "ghcr.io/devcontainers/features/node:1": {
-      "version": "20",
-      "pnpmVersion": "latest"
-    }
-  },
-  "customizations": {
+"features": {
+  "ghcr.io/devcontainers/features/node:1": {
+    "version": "20",
+    "pnpmVersion": "latest"
+  }
+},
+
+"postCreateCommand": "bash .devcontainer/setup.sh",
+"customizations": {
     "vscode": {
       "settings": {
         "python.defaultInterpreterPath": "/usr/local/bin/python",
