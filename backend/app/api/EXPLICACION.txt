@@ -1,0 +1,22 @@
+CARPETA: backend/app/api
+========================
+
+¿QUÉ ES ESTA CARPETA?
+Organiza todo lo relacionado con los "endpoints" (rutas de la API).
+Es la capa de presentación: recibe las peticiones HTTP y las responde.
+Con el tiempo, cada entidad tendrá su propia sección aquí (API REST).
+
+ARCHIVOS:
+
+1. __init__.py
+   - Marca "api" como paquete de Python. Está vacío.
+   - Permite importar: from app.api.v1.router import api_router
+
+SUBCARPETAS:
+   - v1/            -> routers y endpoints de la versión 1 de la API
+     (ver EXPLICACION.txt dentro de v1 y de endpoints)
+
+IDEAS PARA EL EXAMEN:
+   • La API se organiza en versiones (v1) para poder evolucionarla sin romper
+     a los clientes existentes.
+   • La capa de API NO debe contener lógica de negocio: solo recibe y responde.

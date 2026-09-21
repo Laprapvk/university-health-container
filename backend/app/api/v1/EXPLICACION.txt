@@ -1,0 +1,35 @@
+CARPETA: backend/app/api/v1
+===========================
+
+¿QUÉ ES ESTA CARPETA?
+Contiene el "router principal" de la versión 1 de la API.
+Un router en FastAPI es como un mini-APP que agrupa rutas y luego se conecta
+a la aplicación principal con un prefijo.
+
+ARCHIVOS:
+
+1. router.py
+   - Crea el APIRouter principal de la API (api_router).
+   - Junta TODOS los routers de las distintas secciones.
+   - Actualmente registra:
+       • /health  -> estado del servidor y la base de datos
+       • /auth    -> registro, login y usuario actual (authentication)
+   - Cada sección se conecta con include_router(router, prefix, tags).
+     Los "tags" sirven para agrupar en la documentación (/docs).
+
+   IDEAS PARA EL EXAMEN:
+   • APIRouter() agrupa rutas.
+   • include_router(router, prefix="/health", tags=["Health"]) añade el router
+     bajo un prefijo.
+   • La aplicación principal usa este router para exponer todo: /api/v1 + prefijos.
+
+2. __init__.py
+   - Marca la carpeta como paquete de Python. Está vacío.
+
+SUBCARPETAS:
+   - endpoints/ -> archivos con cada endpoint concreto (ver EXPLICACION.txt allí)
+
+CÓMO FUNCIONA UN PREFIJO:
+   - El router principal tiene prefijo /api/v1 (definido en main.py).
+   - /auth se registra con prefijo /auth.
+   - Resultado final: POST /api/v1/auth/login

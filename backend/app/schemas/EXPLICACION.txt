@@ -1,0 +1,31 @@
+CARPETA: backend/app/schemas
+============================
+
+¿QUÉ ES ESTA CARPETA?
+Lugar PLANIFICADO para los modelos de Pydantic (validación) de la API.
+
+¿QUÉ ES UN SCHEMA (Pydantic)?
+   - Es una clase que valida los datos que ENTRAN (requests) y define los que
+     SALEN (responses).
+   - Ejemplo: si un campo es int y llega texto, Pydantic devuelve error 422.
+   - A diferencia de los modelos de BD (SQLAlchemy), los schemas NO tocan
+     la base de datos: solo validan datos.
+
+ARCHIVOS:
+
+1. __init__.py
+   - Marca la carpeta como paquete de Python. Está vacío.
+   - En el futuro contendrá los schemas generales de la API (usuarios,
+     servicios, etc.).
+
+NOTA IMPORTANTE:
+   - En este proyecto, los schemas de AUTENTICACIÓN ya están creados
+     dentro de la carpeta authentication/schemas.py (RegisterRequest,
+     LoginRequest, Token, UserPublic).
+   - Esta carpeta queda reservada para los schemas de las demás entidades
+     (University, Campus, Service, etc.) cuando se implementen sus CRUDs.
+
+DIFERENCIA CLAVE PARA EL EXAMEN:
+   - models/  -> tablas SQL (SQLAlchemy). Cómo se guardan los datos.
+   - schemas/ -> validación (Pydantic). Cómo se envían y reciben los datos.
+   - Ambos pueden verse similares, pero cumplen roles DISTINTOS.
