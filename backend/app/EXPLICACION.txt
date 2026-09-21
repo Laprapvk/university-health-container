@@ -1,0 +1,37 @@
+CARPETA: backend/app (raíz de la aplicación)
+============================================
+
+¿QUÉ ES ESTA CARPETA?
+Es el punto de entrada de toda la API. Contiene el archivo principal (main.py) que
+arranca el servidor FastAPI y las subcarpetas que organizan el código por responsabilidad.
+
+ARCHIVOS:
+
+1. main.py
+   - Es el "motor" de la aplicación. Crea la instancia de FastAPI y la ejecuta.
+   - Configura el nombre del proyecto (settings.PROJECT_NAME), el prefijo de la
+     API (/api/v1) y el documento OpenAPI (/api/v1/openapi.json).
+   - Activa CORS: permite que el frontend (http://localhost:5173) haga peticiones.
+   - Registra el router principal (api_router) con el prefijo /api/v1.
+   - Define "lifespan": código que se ejecuta al encender y apagar la app.
+     Aquí solo cierra el motor de la base de datos (engine.dispose()) al apagar.
+
+   IDEAS PARA EL EXAMEN:
+   • FastAPI se crea con FastAPI(titulo=..., lifespan=...).
+   • Los routers se montan con app.include_router(router, prefix="...").
+   • CORS permite peticiones desde otro origen (el frontend).
+
+2. __init__.py
+   - Marca la carpeta "app" como un paquete de Python.
+   - Está vacío porque no necesita importar nada especial.
+   - Gracias a esto podemos escribir: "from app.main import app".
+
+SUBCARPETAS (cada una tiene su propio EXPLICACION.txt):
+   - api/           -> lógica de las rutas (endpoints) y routers
+   - authentication -> registro, login y generación de tokens (JWT)
+   - authorization  -> roles, claims, guards y decorador @access
+   - core           -> configuración y utilidades generales
+   - db             -> conexión y sesión con la base de datos
+   - models         -> modelos (tablas) de la base de datos
+   - schemas         -> modelos de validación Pydantic (planificados)
+   - services       -> lógica de negocio (planificados)

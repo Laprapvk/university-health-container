@@ -1,0 +1,40 @@
+CARPETA: backend/app/db
+=======================
+
+¿QUÉ ES ESTA CARPETA?
+Todo lo relacionado con la conexión a la base de datos y la sesión de los modelos.
+
+ARCHIVOS:
+
+1. base.py
+   - Define la clase Base(DeclarativeBase) usando SQLAlchemy 2.0.
+   - Todos los modelos (tablas) heredan de esta clase:
+       class University(Base): ...
+   - Es el "pegamento" que permite que los modelos se registren y se puedan crear
+     las tablas o migraciones.
+   - Python considera base como la base de todos los modelos del proyecto.
+
+2. session.py
+   - Crea el motor asíncrono que conecta con PostgreSQL:
+       create_async_engine(settings.DATABASE_URL)
+   - Crea AsyncSessionLocal: "fábrica" de sesiones (async_sessionmaker).
+     Configura expire_on_commit=False (los objetos siguen usables tras el commit)
+     y autoflush=False (control manual de cuándo se envía la información).
+   - Define get_db(): dependencia de FastAPI que entrega una sesión por petición.
+       - Abre una sesión, la "cede" (yield) al endpoint y la cierra al terminar.
+   - Se usa así en los endpoints:
+       db: AsyncSession = Depends(get_db)
+
+   IDEAS PARA EL EXAMEN:
+   • Un "engine" es la conexión; una "session" es una unidad de trabajo.
+   • async -> el proyecto usa SQLAlchemy asíncrono (AsyncSession, asyncpg).
+   • get_db es un "generator dependency": usa yield para entregar la sesión
+     y el bloque con "async with" garantiza cerrarla.
+
+3. __init__.py
+   - Marca la carpeta como paquete de Python. Está vacío.
+
+RELACIÓN CON EL RESTO:
+   - base.py se importa en todos los modelos (models/**).
+   - session.py se usa en health.py, authentication/service.py y
+     authentication/dependencies.py (Depends(get_db)).

@@ -1,0 +1,40 @@
+CARPETA: backend/alembic
+========================
+
+¿QUÉ ES ESTA CARPETA?
+Configura ALEMBIC: la herramienta de MIGRACIONES de base de datos.
+
+¿QUÉ ES UNA MIGRACIÓN?
+   - Es una "versión" de los cambios en la estructura de la BD.
+   - Cuando agregas una columna o tabla nueva, Alembic genera un script que
+     aplica ese cambio de forma controlada.
+   - Nos permite evolucionar la BD sin perder datos y mantener el historial
+     de los cambios en el código.
+
+ARCHIVOS:
+
+1. env.py
+   - El "cerebro" que ejecuta las migraciones. NO lo editas normalmente.
+   - Lee la configuración de alembic.ini (archivo en la carpeta backend/,
+     justo fuera de esta carpeta).
+   - Configura target_metadata = Base.metadata: le dice a Alembic que compare
+     con los modelos del proyecto (app.models) para saber qué tablas existen.
+   - Importa "import app.models" para que todos los modelos se registren
+     antes de generar una migración.
+   - Define dos modos:
+       • OFFLINE (run_migrations_offline) -> genera el SQL sin conectarse
+       • ONLINE (run_migrations_online)  -> aplica contra la BD real
+   - Como el motor es asíncrono (asyncpg), usa async_engine_from_config
+     y ejecuta las migraciones con asyncio.run().
+
+   TÉRMINOS PARA EL EXAMEN:
+   • target_metadata: describe la estructura actual según los modelos.
+   • compare_type=True: detecta también cambios de tipo de columna.
+
+2. versions/
+   - Subcarpeta con las migraciones CONCRETAS (cada una es un archivo .py).
+   - Ver EXPLICACION.txt dentro de versions/.
+
+COMANDOS ÚTILES:
+   alembic revision --autogenerate -m "mensaje"   -> crea una migración nueva
+   alembic upgrade head                          -> aplica las migraciones

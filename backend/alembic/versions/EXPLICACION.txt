@@ -1,0 +1,42 @@
+CARPETA: backend/alembic/versions
+=================================
+
+¿QUÉ ES ESTA CARPETA?
+Contiene las MIGRACIONES concretas de la base de datos, aplicadas en orden.
+Cada archivo es una "versión" de la estructura de la BD.
+
+ARCHIVOS:
+
+1. 001_initial_schema.py
+   - La migración INICIAL (crea TODAS las tablas del proyecto).
+   - Define revision = "001_initial_schema" (identificador único)
+     y down_revision = None (no hay migración anterior: es la primera).
+   - En upgrade() crea las tablas en orden (de padres a hijos):
+       1. universities    5. services     8. contacts
+       2. campuses        6. staff_members 9. schedules
+       3. buildings       7. roles         10. users
+       4. departments
+     (En SQL real se crean primero las tablas "padre" porque las hijas
+      usan ForeignKey que apunta a ellas.)
+   - Crea los ÍNDICES para las columnas usadas en búsquedas y claves únicas.
+   - En downgrade() DESHACE todo en orden inverso
+     (usuario -> ... -> universities) y borra las tablas.
+
+   TÉRMINOS PARA EL EXAMEN:
+   • revision: identificador de la versión de la migración.
+   • down_revision: la versión anterior (para poder retroceder).
+   • op.create_table / op.drop_table / op.create_index: comandos de Alembic.
+   • upgrade() = avanzar, downgrade() = retroceder.
+   • ondelete="CASCADE"/"RESTRICT"/"SET NULL": comportamiento al borrar.
+
+CÓMO SE REDACTA UNA MIGRACIÓN A MANO:
+   op.create_table(
+       "mi_tabla",
+       sa.Column("id", sa.Integer(), primary_key=True),
+       sa.Column("name", sa.String(50), nullable=False),
+   )
+
+PARA EL EXAMEN: ¿QUÉ DIFERENCIA HAY CON LOS MODELOS?
+   - models/  = la estructura en el código (SQLAlchemy).
+   - versions/ = el HISTORIAL de estructura en la BD (Alembic).
+   - Los modelos son el "estado actual"; las migraciones, el "cómo se llegó".

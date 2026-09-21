@@ -1,0 +1,66 @@
+CARPETA: backend/app/authentication
+===================================
+
+¿QUÉ ES ESTA CARPETA?
+Todo lo relacionado con AUTENTICACIÓN: "¿quién eres?".
+Se encarga de registrar usuarios, verificar su contraseña y entregar un token
+JWT que demuestra que el usuario ya inició sesión.
+
+FLUJO COMPLETO (LO MÁS IMPORTANTE PARA EL EXAMEN):
+  1. REGISTRO  -> el usuario crea una cuenta (POST /auth/register)
+  2. LOGIN     -> el usuario manda usuario+contraseña (POST /auth/login)
+  3. TOKEN     -> si es correcto, se entrega un JWT firmado con su "sub" y "role"
+  4. /me       -> con el token, consulta sus propios datos (GET /auth/me)
+
+ARCHIVOS:
+
+1. schemas.py
+   - Modelos Pydantic para validar datos que entran y salen.
+   - RegisterRequest  -> datos del registro (username, email, password, role_id)
+   - LoginRequest     -> datos del login (username, password)
+   - Token            -> respuesta del login (access_token, token_type)
+   - UserPublic       -> datos del usuario que se devuelven (NUNCA la contraseña)
+   IDEAS: Pydantic valida automáticamente; si falta un campo -> error 422.
+
+2. security.py
+   - Utilidades de seguridad:
+       • hash_password()      -> convierte la contraseña en hash (bcrypt)
+       • verify_password()    -> comprueba si la contraseña coincide con el hash
+       • create_access_token(subject, role) -> crea el JWT (firma con SECRET_KEY)
+       • decode_token()       -> lee y verifica un token JWT
+   - El JWT contiene: sub (usuario) + role (rol) + exp (fecha de expiración).
+   IDEAS: la contraseña NUNCA se guarda en texto plano, solo su hash.
+
+3. service.py
+   - Lógica de negocio de la autenticación (habla con la base de datos):
+       • get_user_by_username() -> busca un usuario por su nombre
+       • authenticate_user()    -> verifica usuario + contraseña
+       • create_user()          -> crea el usuario con contraseña hasheada
+       • get_role_by_id()       -> consulta si existe el rol indicado
+   IDEAS: separar esta lógica del "router" mantiene el código limpio y reutilizable.
+
+4. dependencies.py
+   - Define get_current_user():
+       • Lee el token del header "Authorization: Bearer <token>"
+       • Lo decodifica (si es inválido -> 401)
+       • Busca el usuario en la base de datos
+       • Devuelve el usuario o lanza 401
+   - Este "guard" básico se usa con Depends() para proteger rutas.
+   IDEAS: HTTPBearer exige que el cliente envíe el token como Bearer.
+
+5. router.py
+   - Define las rutas visibles de la autenticación:
+       • POST /auth/register -> crea usuario (201) o error si el rol no existe
+       • POST /auth/login    -> devuelve el Token JWT (401 si credenciales malas)
+       • GET  /auth/me       -> devuelve el usuario actual (protegido con JWT)
+   - Conecta schemas (validación) + service (lógica) + security (token).
+
+6. __init__.py
+   - Marca la carpeta como paquete de Python. El router se exporta aquí
+     para poder importarlo fácil (from app.authentication.router import router).
+
+RESUMEN DE RELACIONES ENTRE ARCHIVOS:
+   router  -> usa schemas (validar), service (BD), security (crear token),
+              dependencies (proteger /me)
+   service -> usa security (hash de contraseña) y models (User, Role)
+   dependencies -> usa security (decodificar JWT) y service (buscar usuario)

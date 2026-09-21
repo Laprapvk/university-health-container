@@ -1,0 +1,88 @@
+CARPETA: backend/app/models
+===========================
+
+¿QUÉ ES ESTA CARPETA?
+Contiene los MODELOS de la base de datos. Cada archivo representa una TABLA.
+Un modelo en SQLAlchemy es una clase Python que mapea a una tabla SQL:
+cada atributo Mapped[...] es una columna.
+
+CONSEJO PARA EL EXAMEN:
+Relaciona los modelos por jerarquía (de "padre a hijo"):
+  University -> Campus -> Building / Department -> Service -> Contact / Schedule
+  Role <- User (los usuarios pertenecen a un rol)
+  Department -> StaffMember
+
+TÉRMINOS CLAVE (aparecen en todos los archivos):
+   • Mapped[int] / Mapped[str] -> tipo de la columna (SQLAlchemy 2.0)
+   • mapped_column(...)        -> crea la columna (índices, claves, único)
+   • ForeignKey("tabla.col", ondelete="...") -> relación con otra tabla
+   • relationship(...)         -> enlace "Python" entre modelos
+   • cascade="all, delete-orphan" -> si borro el padre, se borran los hijos
+
+ARCHIVOS (uno por tabla):
+
+1. university.py  -> tablas: UNIVERSITIES
+   - Representa una universidad (nombre, descripción, web, email, teléfono).
+   - name es único e indexado.
+   - Relación: una universidad tiene muchos campus (1 -> N).
+
+2. campus.py  -> tablas: CAMPUSES
+   - Un campus (sede) de una universidad (dirección, ciudad, estado, código postal).
+   - foreignkey university_id -> pertenece a una universidad.
+   - Relaciones: campus tiene muchos buildings y departments.
+
+3. building.py  -> tablas: BUILDINGS
+   - Un edificio dentro de un campus (nombre, código, dirección).
+   - foreignkey campus_id -> pertenece a un campus.
+   - Relaciones: un edificio puede albergar varios services.
+
+4. department.py  -> tablas: DEPARTMENTS
+   - Un departamento académico (nombre, código, email, teléfono).
+   - foreignkey campus_id -> pertenece a un campus.
+   - Relaciones: tiene services y staff_members.
+
+5. service.py  -> tablas: SERVICES  (el más IMPORTANTE del proyecto)
+   - Un servicio universitario (psicología, enfermería, etc.).
+   - foreignkeys: department_id (obligatorio) y building_id (opcional,
+     con ondelete="SET NULL": si se borra el edificio, el servicio queda).
+   - Relaciones: 1 servicio tiene muchos contacts y schedules.
+
+6. staff_member.py  -> tablas: STAFF_MEMBERS
+   - Un miembro del personal (nombre, apellido, cargo, email).
+   - foreignkey department_id -> trabaja en un departamento.
+
+7. contact.py  -> tablas: CONTACTS
+   - Un medio de contacto de un servicio (email, teléfono, red social).
+   - foreignkey service_id -> pertenece a un servicio.
+   - ondelete="CASCADE": si se borra el servicio, se borran sus contactos.
+
+8. schedule.py  -> tablas: SCHEDULES
+   - Horario de un servicio (día de la semana, hora de apertura/cierre).
+   - foreignkey service_id -> pertenece a un servicio.
+   - Usa Time para las horas (opening_time, closing_time).
+
+9. role.py  -> tablas: ROLES
+   - Modela los roles de los usuarios (name + description).
+   - name es único e indexado.
+   - Relación: un rol lo pueden tener muchos usuarios (1 -> N con User).
+   - IMPORTANTE: los roles del sistema son "admin", "staff", "student"
+     (ver app/authorization/roles.py). Se relaciona con la autenticación.
+
+10. user.py  -> tablas: USERS
+   - Usuario del sistema (username, email, password_hash).
+   - foreignkey role_id -> cada usuario tiene UN rol.
+   - username y email son únicos e indexados.
+   - NUNCA guarda la contraseña: guarda password_hash (bcrypt).
+   - Relación: many-to-one con Role (role = relationship(...)).
+
+11. __init__.py
+   - Importa TODOS los modelos para que se registren en Base.metadata
+     (importante para crearlos en la BD y para Alembic).
+   - Define __all__ con la lista de modelos disponibles.
+   - Sin este import, los modelos no se "avisan" a la base de datos.
+
+RESUMEN DEL CASCADE (borrado en cadena):
+   University -> Campus -> Department -> Service -> Contact/Schedule
+   Department -> StaffMember
+   Service -> Building = SET NULL (si se borra el edificio, el servicio NO se borra)
+   Role -> User = RESTRICT (no se puede borrar un rol que tenga usuarios)
