@@ -20,6 +20,15 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+
+@app.get("/")
+def root():
+    return {
+        "message": f"Bienvenido a {settings.PROJECT_NAME}",
+        "docs": "http://localhost:8000/docs",
+    }
+
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],

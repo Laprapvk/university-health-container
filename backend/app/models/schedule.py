@@ -1,9 +1,15 @@
+from __future__ import annotations
+
 from datetime import time
+from typing import TYPE_CHECKING
 
 from sqlalchemy import ForeignKey, String, Time
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
+
+if TYPE_CHECKING:
+    from app.models.service import Service
 
 
 class Schedule(Base):
@@ -32,4 +38,4 @@ class Schedule(Base):
         nullable=True,
     )
 
-    service: Mapped["Service"] = relationship(back_populates="schedules")
+    service: Mapped[Service] = relationship(back_populates="schedules")

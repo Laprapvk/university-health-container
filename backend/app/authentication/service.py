@@ -1,12 +1,17 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from app.authentication.security import hash_password, verify_password
 from app.models import Role, User
 
 
 async def get_user_by_username(db: AsyncSession, username: str) -> User | None:
-    result = await db.execute(select(User).where(User.username == username))
+    # Agregamos selectinload(User.role) para cargar la relación del rol de manera asíncrona
+    stmt = (
+        select(User).options(selectinload(User.role)).where(User.username == username)
+    )
+    result = await db.execute(stmt)
     return result.scalar_one_or_none()
 
 
