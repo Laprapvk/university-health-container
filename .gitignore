@@ -1,21 +1,22 @@
+cat > .gitignore <<'EOF'
 # Python
 __pycache__/
 *.py[cod]
-*$py.class
-
-# Virtual environments
 .venv/
-venv/
-env/
+.pytest_cache/
+.mypy_cache/
+
+# Node
+node_modules/
+dist/
+.vite/
 
 # Environment variables
 .env
 .env.*
-
-# Ruff / tooling
-.ruff_cache/
+!.env.example
 
 # IDE / OS
 .vscode/
 .DS_Store
-.pnpm-store/
+EOF

@@ -18,10 +18,12 @@
 **Task:** Week 1 environment and workflow setup.
 
 **What we did:**
+
 - Reviewed the repository structure.
 - Configured collaborators.
 - Prepared the GitHub workflow.
 - Reviewed the Dev Container requirements.
 
 **Next step:**
-- Complete GitHub workflow and project proposal.
+
+- Complete the backend data model, migrations, seed data, and API endpoints.
