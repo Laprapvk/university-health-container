@@ -72,3 +72,42 @@ Mobile Application
 |      PostgreSQL         |
 +-------------------------+
 ```
+
+---
+
+## Cómo ejecutar
+
+### Backend
+
+```bash
+cd backend
+uv sync
+uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+Rutas útiles:
+
+- API: <http://localhost:8000>
+- Documentación: <http://localhost:8000/docs>
+- Health: <http://localhost:8000/health>
+- Health versionado: <http://localhost:8000/api/v1/health>
+
+> En el devcontainer usa siempre `uv run`. El comando `uvicorn` por sí solo
+> no existe en el PATH porque las dependencias están dentro de `backend/.venv`.
+> El `--host 0.0.0.0` permite que el navegador del host acceda al servidor.
+>
+> El `.venv` del devcontainer está aislado en un volumen de Docker. Si abres
+> el proyecto directamente en Windows, elimina `backend/.venv` y ejecuta
+> `uv sync` para crear el entorno de Windows.
+
+### Frontend
+
+```bash
+cd frontend
+pnpm install
+pnpm dev
+```
+
+El frontend queda en <http://localhost:5173> y consume la API en
+`http://localhost:8000/api/v1`.
+

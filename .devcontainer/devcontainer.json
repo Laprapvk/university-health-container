@@ -15,8 +15,15 @@
 "customizations": {
     "vscode": {
       "settings": {
-        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "python.defaultInterpreterPath": "/workspaces/university-health-container/backend/.venv/bin/python",
+        "python.analysis.extraPaths": [
+          "/workspaces/university-health-container/backend",
+          "/workspaces/university-health-container/backend/.venv/Lib/site-packages",
+          "/workspaces/university-health-container/backend/.venv/lib/python3.12/site-packages"
+        ],
         "python.analysis.typeCheckingMode": "basic",
+        "python.analysis.diagnosticMode": "workspace",
+        "python.analysis.indexing": true,
         "editor.formatOnSave": true,
         "editor.codeActionsOnSave": {
           "source.fixAll": "explicit",

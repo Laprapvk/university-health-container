@@ -72,21 +72,16 @@ The application follows a decoupled client-server architecture with clear separa
 backend/
 │
 ├── app/
-│   ├── api/                  # API Routers / Endpoints
-│   │   └── routes/
-│   ├── authentication/       # OAuth2 / JWT authentication handlers
-│   ├── authorization/        # Role guards & permission helpers
-│   ├── core/                 # App configuration & security settings
-│   ├── db/                   # Database session and connection setup
-│   ├── models/               # Active SQLAlchemy ORM Models
-│   │   ├── role.py
-│   │   ├── schedule.py
-│   │   ├── service.py
-│   │   ├── staff_member.py
-│   │   └── user.py
-│   ├── schemas/              # Pydantic schemas (Validation)
+│   ├── main.py               # FastAPI entrypoint + routers
+│   ├── config.py             # App configuration
+│   ├── database.py           # Engine, session and get_db
+│   ├── models.py             # SQLAlchemy ORM models
+│   ├── schemas.py            # Pydantic DTOs
+│   ├── security.py           # JWT, password hashing, current user
+│   ├── errors.py             # Business errors
+│   ├── routers/              # HTTP layer (one file per resource)
 │   ├── services/             # Business logic layer
-│   └── main.py               # FastAPI entrypoint
+│   └── repositories/         # Data access layer
 │
 ├── seeds/                    # Database seeding scripts (SQL)
 ├── alembic.ini               # Database migrations configuration
@@ -99,7 +94,7 @@ backend/
 
 ## 5. Active Database Models
 
-The relational data model consists of 5 active entities defined in `app/models/`:
+The relational data model consists of 5 active entities defined in `app/models.py`:
 
 - **Role** (`role.py`): Defines system privileges (`ADMIN`, `STAFF`, `STUDENT`).
 - **User** (`user.py`): Stores user credentials, hashed passwords, and assigned `role_id`.

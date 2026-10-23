@@ -5,6 +5,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ..:/workspaces/university-health-container:cached
+      - backend-venv:/workspaces/university-health-container/backend/.venv
     command: sleep infinity
     networks:
       - dev-network
@@ -47,3 +48,4 @@ networks:
 volumes:
   postgres-data:
   redis-data:
+  backend-venv:

@@ -1,0 +1,14 @@
+{
+  "venvPath": "backend",
+  "venv": ".venv",
+  "extraPaths": [
+    "backend",
+    "backend/.venv/Lib/site-packages",
+    "backend/.venv/lib/python3.12/site-packages"
+  ],
+  "typeCheckingMode": "basic",
+  "exclude": [
+    "**/__pycache__",
+    "backend/.venv"
+  ]
+}

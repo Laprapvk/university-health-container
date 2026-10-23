@@ -1,4 +1,3 @@
-cat > .gitignore <<'EOF'
 # Python
 __pycache__/
 *.py[cod]
@@ -19,4 +18,3 @@ dist/
 # IDE / OS
 .vscode/
 .DS_Store
-EOF
