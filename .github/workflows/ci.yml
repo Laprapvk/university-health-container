@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   frontend:
@@ -17,17 +18,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 12
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: pnpm
           cache-dependency-path: frontend/pnpm-lock.yaml
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 12
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -47,6 +48,9 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Check silenced checks
+        run: python backend/scripts/check_silenced_checks.py
+
       - name: Install uv
         uses: astral-sh/setup-uv@v5
         with:
@@ -59,3 +63,8 @@ jobs:
       - name: Verify backend
         working-directory: backend
         run: uv run python -c "from app.main import app; print('Backend OK')"
+
+      - name: Check health endpoint
+        working-directory: backend
+        run: |
+          uv run python -c "from app.main import app; assert '/health' in app.openapi()['paths'], 'Falta la ruta /health'; print('Health endpoint OK')"
